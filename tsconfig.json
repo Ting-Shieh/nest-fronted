@@ -7,7 +7,14 @@
     "skipLibCheck": true,
 
     /* Bundler mode */
-    "moduleResolution": "bundler",
+    /*
+    Cannot find module 'vue'.
+    Did you mean to set the 'moduleResolution' option to 'node',
+    or to add aliases to the 'paths' option?
+    [解決]
+    "moduleResolution": "bundler", -> "moduleResolution": "node",
+    */
+    "moduleResolution": "node",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
