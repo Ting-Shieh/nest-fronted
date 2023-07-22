@@ -40,6 +40,9 @@
 </template>
 <script setup lang="ts">
 import { computed, reactive } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter()
 const loginInfo = reactive({
   username: '',
   usernameMsg: computed(( )=> {
@@ -60,7 +63,9 @@ const loginInfo = reactive({
   }),
 })
 
-const submit = () => {}
+const submit = () => {
+  router.push({path: '/home'})
+}
 </script>
 <style lang="scss">
 

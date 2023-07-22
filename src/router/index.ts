@@ -15,6 +15,18 @@ const routes = [
     path: '/reg',
     component: () => import('@/views/reg.vue'),
   },
+  {
+    path: '/home',
+    component: () => import('@/layouts/default.vue'),
+    redirect: '/home/dashboard',
+    children: [
+      {
+        path: 'dashboard',
+        name: 'dashboard',
+        component: () => import('@/views/dashboard/Dashboard.vue'),
+      }
+    ]
+  },
 ] as RouteRecordRaw[];
 const router = createRouter({
   history: createWebHashHistory(),
