@@ -24,7 +24,22 @@ const routes = [
         path: 'dashboard',
         name: 'dashboard',
         component: () => import('@/views/dashboard/Dashboard.vue'),
-      }
+      },
+      {
+        path: 'users',
+        name: 'usersIndex',
+        component: () => import('@/views/users/index.vue'),
+      },
+      {
+        path: 'roles',
+        name: 'rolesIndex',
+        component: () => import('@/views/roles/index.vue'),
+      },
+      {
+        path: 'menus',
+        name: 'menusIndex',
+        component: () => import('@/views/menus/index.vue'),
+      },
     ]
   },
 ] as RouteRecordRaw[];
