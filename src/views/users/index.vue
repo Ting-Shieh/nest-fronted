@@ -57,26 +57,87 @@
 </template>
 <script setup lang="ts">
 import axios from '@/utils/axios';
-import { onMounted, ref } from 'vue';
-interface Profile {
-  gender: number;
-  address: string;
-  photo: string;
-}
+import { onMounted, ref, reactive } from 'vue';
+import { FormItem, UserItem } from '@/types/User';
 
-interface RoleItem {
-  id: number;
-  name: string;
-}
-
-interface UserItem {
-  id: number;
-  username: string;
-  password?: string;
-  profile: Profile;
-  roles: RoleItem[];
-}
 const list = ref([] as UserItem[])
+const tmpItem = ref({} as UserItem);
+
+const formSchema = reactive([
+      {
+        field: '用户名',
+        type: 'input',
+        prop: 'username',
+        value: '',
+        attr: {
+          placeholder: '请输入用户名',
+        },
+      },
+      {
+        field: '密码',
+        type: 'input',
+        prop: 'password',
+        value: '',
+        attr: {
+          placeholder: '请输入登录密码',
+        },
+      },
+      {
+        field: '角色',
+        type: 'checkbox',
+        prop: 'roles',
+        value: [],
+        children: [
+          {
+            value: 1,
+            field: '普通用户',
+          },
+          {
+            value: 2,
+            field: '管理员',
+          },
+          {
+            value: 3,
+            field: '测试用户',
+          },
+        ],
+      },
+      {
+        field: '性别',
+        type: 'radio',
+        prop: 'gender',
+        value: 0,
+        children: [
+          {
+            value: 1,
+            field: '男',
+          },
+          {
+            value: 2,
+            field: '女',
+          },
+        ],
+      },
+      {
+        field: '头像',
+        type: 'input',
+        prop: 'photo',
+        value: '',
+        attr: {
+          placeholder: '请输入头像链接',
+        },
+      },
+      {
+        field: '地址',
+        type: 'input',
+        prop: 'address',
+        value: '',
+        attr: {
+          placeholder: '请输入地址',
+        },
+      },
+    ] as FormItem[]);
+
 async function init() {
   list.value = await axios.get('/user') as UserItem[];
 }
