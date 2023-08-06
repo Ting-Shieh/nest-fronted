@@ -56,9 +56,9 @@
   </div>
 </template>
 <script setup lang="ts">
-import axios from '@/utils/axios';
 import { onMounted, ref, reactive } from 'vue';
 import { FormItem, UserItem } from '@/types/User';
+import { getAllUsers } from '@/api/user';
 
 const list = ref([] as UserItem[])
 const tmpItem = ref({} as UserItem);
@@ -139,7 +139,7 @@ const formSchema = reactive([
     ] as FormItem[]);
 
 async function init() {
-  list.value = await axios.get('/user') as UserItem[];
+  list.value = (await getAllUsers()) as unknown as UserItem[];
 }
 
 onMounted(async () => {

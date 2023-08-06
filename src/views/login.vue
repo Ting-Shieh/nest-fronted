@@ -8,21 +8,21 @@
           <!-- is-valid -> valid-feedbac  || is-invalid -> invalid-feedback-->
           <input
             v-model="loginInfo.username" type="email" 
-            :class="['form-control', {'is-invalid': loginInfo.usernameMsg}]"
+            :class="['form-control', {'is-invalid': loginInfoMsg.usernameMsg}]"
             id="accountInput" aria-describedby="accountHelp" required
           >
-          <div class="invalid-feedback">{{ loginInfo.usernameMsg }}</div>
+          <div class="invalid-feedback">{{ loginInfoMsg.usernameMsg }}</div>
         </div>
         <div class="mb-3">
           <label for="passwordInput" class="form-label">密碼:</label>
           <input
             v-model="loginInfo.password"
             type="password"
-            :class="['form-control', {'is-invalid': loginInfo.passwordMsg}]"
+            :class="['form-control', {'is-invalid': loginInfoMsg.passwordMsg}]"
             id="passwordInput"
             required
           >
-          <div class="invalid-feedback">{{ loginInfo.passwordMsg }}</div>
+          <div class="invalid-feedback">{{ loginInfoMsg.passwordMsg }}</div>
         </div>
         <div class="mb-3 form-check">
           <input type="checkbox" class="form-check-input" id="exampleCheck1">
@@ -39,22 +39,28 @@
   </div>
 </template>
 <script setup lang="ts">
+import { signin } from '@/api/login';
+import { LoginResponse } from '@/types/Login';
 import { computed, reactive } from 'vue';
 import { useRouter } from 'vue-router';
+import { useUserStore } from '../store/user';
 
+const store = useUserStore()
 const router = useRouter()
 const loginInfo = reactive({
-  username: '',
+  username: 'nest-user5',
+  password: 'nest-user5',
+})
+const loginInfoMsg = reactive({
   usernameMsg: computed(( )=> {
-    if(
-      loginInfo.username !== '' &&
-      !/[A-Z0-9._%+-]+@[A-Z0-9-]+.+.[A-Z]{2,4}/igm.test(loginInfo.username)
-    ){
-      return '請輸入正確Email格式地址!'
-    }
+    // if(
+    //   loginInfo.username !== '' &&
+    //   !/[A-Z0-9._%+-]+@[A-Z0-9-]+.+.[A-Z]{2,4}/igm.test(loginInfo.username)
+    // ){
+    //   return '請輸入正確Email格式地址!'
+    // }
     return ''
   }),
-  password: '',
   passwordMsg: computed(( )=> {
     if(loginInfo.password !== '' && loginInfo.password.length < 6){
       return '密碼長度不能小於6位'
@@ -62,8 +68,9 @@ const loginInfo = reactive({
     return ''
   }),
 })
-
-const submit = () => {
+const submit = async () => {
+  const res = await signin(loginInfo) as unknown as LoginResponse // get token
+  res.accessToken && store.$patch({ token: res.accessToken })
   router.push({path: '/home'})
 }
 </script>

@@ -33,5 +33,6 @@ export const userMenusStore = defineStore('menu', {
         routeName: 'rolesIndex'
       },
     ] as MenuItem[]
-  })
+  }),
+  persist: true
 })
