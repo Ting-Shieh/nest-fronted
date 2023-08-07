@@ -28,7 +28,7 @@
         <td>
           <button type="button" class="btn btn-secondary px-3">
             <i class="far fa-edit me-2"></i>Edit</button>
-          <button type="button" class="btn btn-danger px-3 ms-3">
+          <button type="button" class="btn btn-danger px-3 ms-3" @click="openModal('delete')">
             <i class="far fa-trash-alt me-2"></i>Delete
           </button>
         </td>
@@ -44,9 +44,24 @@
         <li class="page-item"><a class="page-link" href="#">Next</a></li>
       </ul>
     </nav>
+    {{ deleteShow }}
+    <delete-modal v-model:show="deleteShow" @delete="deleteSubmit" />
 </template>
 <script setup lang="ts">
-import {} from 'vue';
+import DeleteModal from '@/components/modal/DeleteModal.vue'
+import { ref } from 'vue'
+
+const deleteShow = ref(false)
+// 删除该条数据
+const deleteSubmit = async () => {
+  deleteShow.value = false
+}
+
+const openModal = (type: string) => {
+  if (type === 'delete') {
+    deleteShow.value = true;
+  } 
+}
 </script>
 <style lang="scss" scoped>
 
