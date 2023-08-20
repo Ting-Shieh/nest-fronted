@@ -14,7 +14,6 @@ export function useModal (refValue: Ref<boolean>, key: string) {
   const vm = getCurrentInstance()
 
   onMounted(() => {
-    console.log('!!!')
     // 2.初始化modal
     modal.value = new bootstrap.Modal(modalRef.value, {
       backdrop: true,

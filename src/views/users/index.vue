@@ -7,6 +7,15 @@
 
 <template>
   <div class="">
+    <div class="mb-3">
+      <button
+        type="button"
+        class="btn btn-primary px-3"
+        @click="openModal('add')"
+      >
+        <i class="fas fa-plus"></i>新增
+      </button>
+    </div>
     <table class="table table-bordered table-hover table-striped">
       <thead>
         <tr>
@@ -31,12 +40,14 @@
             <button
               type="button"
               class="btn btn-secondary px-3"
+              @click="openModal('edit', item)"
             >
               <i class="far fa-edit me-2"></i>Edit
             </button>
             <button
               type="button"
               class="btn btn-danger px-3 ms-3"
+              @click="openModal('delete', item)"
             >
               <i class="far fa-trash-alt me-2"></i>Delete
             </button>
@@ -53,95 +64,123 @@
         <li class="page-item"><a class="page-link" href="#">Next</a></li>
       </ul>
     </nav>
+    <delete-modal v-model:show="deleteShow" @delete="deleteSubmit" />
+    <EditAddModal v-model:show="editShow" :msg="msg" :schema="formSchema" @submit="editAddSubmit"/>
   </div>
 </template>
 <script setup lang="ts">
 import { onMounted, ref, reactive } from 'vue';
-import { FormItem, UserItem } from '@/types/User';
+import { UserItem } from '@/types/User';
 import { getAllUsers } from '@/api/user';
+import { FormItem } from '@/types/Form'
+import DeleteModal from '@/components/modal/DeleteModal.vue';
+import EditAddModal from '@/components/modal/EditAddModal.vue';
 
+const deleteShow = ref(false)
+const editShow = ref(false)
 const list = ref([] as UserItem[])
-const tmpItem = ref({} as UserItem);
-
-const formSchema = reactive([
-      {
-        field: '用户名',
-        type: 'input',
-        prop: 'username',
-        value: '',
-        attr: {
-          placeholder: '请输入用户名',
+const tmpItem = ref({} as UserItem)
+const msg = ref<'Add'|'Edit'>('Add')
+const formSchema: FormItem[] = reactive(
+  [
+    {
+      field: '用户名',
+      type: 'input',
+      prop: 'username',
+      value: '',
+      attr: {
+        placeholder: '请输入用户名',
+      },
+    },
+    {
+      field: '密码',
+      type: 'input',
+      prop: 'password',
+      value: '',
+      attr: {
+        placeholder: '请输入登录密码',
+      },
+    },
+    {
+      field: '角色',
+      type: 'checkbox',
+      prop: 'roles',
+      value: [],
+      children: [
+        {
+          value: 1,
+          field: 'Admin',
         },
-      },
-      {
-        field: '密码',
-        type: 'input',
-        prop: 'password',
-        value: '',
-        attr: {
-          placeholder: '请输入登录密码',
+        {
+          value: 2,
+          field: 'User',
         },
-      },
-      {
-        field: '角色',
-        type: 'checkbox',
-        prop: 'roles',
-        value: [],
-        children: [
-          {
-            value: 1,
-            field: '普通用户',
-          },
-          {
-            value: 2,
-            field: '管理员',
-          },
-          {
-            value: 3,
-            field: '测试用户',
-          },
-        ],
-      },
-      {
-        field: '性别',
-        type: 'radio',
-        prop: 'gender',
-        value: 0,
-        children: [
-          {
-            value: 1,
-            field: '男',
-          },
-          {
-            value: 2,
-            field: '女',
-          },
-        ],
-      },
-      {
-        field: '头像',
-        type: 'input',
-        prop: 'photo',
-        value: '',
-        attr: {
-          placeholder: '请输入头像链接',
+        {
+          value: 3,
+          field: 'Test',
         },
-      },
-      {
-        field: '地址',
-        type: 'input',
-        prop: 'address',
-        value: '',
-        attr: {
-          placeholder: '请输入地址',
+      ],
+    },
+    {
+      field: '性别',
+      type: 'radio',
+      prop: 'gender',
+      value: 0,
+      children: [
+        {
+          value: 'M',
+          field: '男',
         },
+        {
+          value: 'F',
+          field: '女',
+        },
+      ],
+    },
+    {
+      field: '头像',
+      type: 'input',
+      prop: 'photo',
+      value: '',
+      attr: {
+        placeholder: '请输入头像链接',
       },
-    ] as FormItem[]);
+    },
+    {
+      field: '地址',
+      type: 'input',
+      prop: 'address',
+      value: '',
+      attr: {
+        placeholder: '请输入地址',
+      },
+    },
+  ]
+);
 
 async function init() {
   list.value = (await getAllUsers()) as unknown as UserItem[];
 }
 
+const deleteSubmit = async () => {
+  deleteShow.value = false
+}
+
+const editAddSubmit = (data: any) => {
+  console.log('index => ',data)
+}
+
+const openModal = (type: string, item?: UserItem) => {
+  if (type === 'delete') {
+    deleteShow.value = true;
+  } else if (type === 'edit') {
+    msg.value = 'Edit'
+    editShow.value = true;
+  } else if (type === 'add') {
+    msg.value = 'Add';
+    editShow.value = true;
+  }
+}
 onMounted(async () => {
   await init();
 })
